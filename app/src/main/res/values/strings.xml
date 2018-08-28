@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">Book Store</string>
+    <string name="add_new_book">Add a Book</string>
+    <!-- Label for category product name -->
+    <string name="category_product_name">Product Name</string>
+    <!-- Text hint for Product Name field in the editor -->
+    <string name="hint_product_name">Author and Name of the Book</string>
+    <!-- Text hint for book price field in the editor -->
+    <string name="hint_book_price">Book Price</string>
+    <string name="genre">Genre</string>
+    <string name="price">Price</string>
+    <!-- currency $ [CHAR LIMIT=5] -->
+    <string name="currency">$</string>
+    <string name="quantity">Quantity</string>
+    <!-- Text hint for quantity field in the editor -->
+    <string name="hint_quantity">How many in stock</string>
+    <!-- how many books in stock (units)-->
+    <string name="how_many_books_in_stock">books</string>
+    <string name="supplier_category">Supplier</string>
+    <!-- Text hint for supplier field in the editor -->
+    <string name="hint_supplier">Supplier</string>
+    <!-- Text hint for supplier phone number field in the editor -->
+    <string name="hint_supplier_phone_number">Supplier Phone Number</string>
+    <!-- Label for dropdown menu option if the book's genre is unknown -->
+    <string name="genre_unknown">Unknown</string>
+    <!-- Label for dropdown menu option for Fiction genre-->
+    <string name="genre_fiction">Fiction</string>
+    <!-- Label for dropdown menu option for Non-Fiction genre-->
+    <string name="genre_non_fiction">Non-Fiction</string>
+    <!-- Label for dropdown menu option for Science fiction genre-->
+    <string name="genre_science_fiction">Science Fiction</string>
+    <!-- Label for dropdown menu option for Action and Adventure genre-->
+    <string name="genre_action_and_Adventure">Action and Adventure</string>
+    <!-- Label for dropdown menu option for Satire genre-->
+    <string name="genre_satire">Satire</string>
+    <!-- Label for dropdown menu option for Drama genre-->
+    <string name="genre_drama">Drama</string>
+    <!-- Label for dropdown menu option for Romance genre-->
+    <string name="genre_romance">Romance</string>
+    <!-- Label for dropdown menu option for History genre-->
+    <string name="genre_history">History</string>
+    <!-- Label for dropdown menu option for Poetry genre-->
+    <string name="genre_poetry">Poetry</string>
+    <!-- Label for dropdown menu option for Tragedy genre-->
+    <string name="genre_tragedy">Tragedy</string>
+    <string name="insert_data">insert data</string>
+    <string name="delete_all_books">delete all books</string>
+    <!-- Label for editor menu option to save book and leave editor -->
+    <string name="action_save">Save</string>
+    <!-- Label for editor overflow menu option that deletes the current book  -->
+    <string name="action_delete">Delete</string>
+</resources>

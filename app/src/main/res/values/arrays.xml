@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- These are the options displayed in the genre drop-down Spinner -->
+    <string-array name="array_genre_options">
+        <item>@string/genre_unknown</item>
+        <item>@string/genre_fiction</item>
+        <item>@string/genre_science_fiction</item>
+        <item>@string/genre_non_fiction</item>
+        <item>@string/genre_action_and_Adventure</item>
+        <item>@string/genre_satire</item>
+        <item>@string/genre_drama</item>
+        <item>@string/genre_tragedy</item>
+        <item>@string/genre_romance</item>
+        <item>@string/genre_poetry</item>
+        <item>@string/genre_history</item>
+
+    </string-array>
+</resources>
