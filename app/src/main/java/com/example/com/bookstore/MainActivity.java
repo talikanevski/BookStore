@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 null
         );
+
         TextView displayView = (TextView) findViewById(R.id.text_view);
 
         try {
@@ -139,21 +140,21 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void insertBook() {
-        // Gets the database in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-
-        values.put(BookEntry.COLUMN_BOOK_NAME, "My Russian Grandmother and her American Vacuum Cleaner|Meir Shalev");
-        values.put(BookEntry.COLUMN_BOOK_GENRE, BookEntry.GENDER_NON_FICTION);
-        values.put(BookEntry.COLUMN_BOOK_PRICE, 20);
-        values.put(BookEntry.COLUMN_BOOK_QUANTITY, 7);
-        values.put(BookEntry.COLUMN_BOOK_SUPPLIER, "PJ Library");
-        values.put(BookEntry.COLUMN_PHONE_NUMBER_OF_SUPPLIER, "858 226 7777");
-
-        long newRowId = db.insert(BookEntry.TABLE_NAME, null, values);
-    }
+//    private void insertBook() {
+//        // Gets the database in write mode
+//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+//
+//        ContentValues values = new ContentValues();
+//
+//        values.put(BookEntry.COLUMN_BOOK_NAME, "My Russian Grandmother and her American Vacuum Cleaner|Meir Shalev");
+//        values.put(BookEntry.COLUMN_BOOK_GENRE, BookEntry.GENDER_NON_FICTION);
+//        values.put(BookEntry.COLUMN_BOOK_PRICE, 20);
+//        values.put(BookEntry.COLUMN_BOOK_QUANTITY, 7);
+//        values.put(BookEntry.COLUMN_BOOK_SUPPLIER, "PJ Library");
+//        values.put(BookEntry.COLUMN_PHONE_NUMBER_OF_SUPPLIER, "858 226 7777");
+//
+//        long newRowId = db.insert(BookEntry.TABLE_NAME, null, values);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_data:
-                insertBook();
+//                insertBook();
                 displayDatabaseInfo();
                 return true;
             // Respond to a click on the "Delete all entries" menu option

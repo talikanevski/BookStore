@@ -16,11 +16,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditorActivity"
+        <activity
+            android:name=".EditorActivity"
             android:label="@string/add_new_book"
-            android:theme="@style/EditorTheme"
             android:parentActivityName=".MainActivity"
-            ></activity>
+            android:theme="@style/EditorTheme"></activity>
+        <provider
+            android:name=".data.BookProvider"
+            android:authorities="com.example.android.books"
+            android:exported="false" />
     </application>
 
 </manifest>
