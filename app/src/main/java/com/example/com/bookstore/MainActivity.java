@@ -1,5 +1,7 @@
 package com.example.com.bookstore;
 
+import android.content.ContentResolver;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.ContentValues;
@@ -56,9 +58,6 @@ public class MainActivity extends AppCompatActivity {
         // and pass the context, which is the current activity.
         BookDBHelper mDbHelper = new BookDBHelper(this);
 
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
         String[] projection = {BookEntry._ID,
                 BookEntry.COLUMN_BOOK_NAME,
                 BookEntry.COLUMN_BOOK_GENRE,
@@ -68,15 +67,12 @@ public class MainActivity extends AppCompatActivity {
                 BookEntry.COLUMN_PHONE_NUMBER_OF_SUPPLIER
         };
 
-        Cursor cursor = db.query(
-                BookEntry.TABLE_NAME,
+        Cursor cursor = getContentResolver().query(
+                BookEntry.CONTENT_URI ,
                 projection,
                 null,
                 null,
-                null,
-                null,
-                null
-        );
+                null);
 
         TextView displayView = (TextView) findViewById(R.id.text_view);
 
@@ -140,21 +136,24 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-//    private void insertBook() {
-//        // Gets the database in write mode
-//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-//
-//        ContentValues values = new ContentValues();
-//
-//        values.put(BookEntry.COLUMN_BOOK_NAME, "My Russian Grandmother and her American Vacuum Cleaner|Meir Shalev");
-//        values.put(BookEntry.COLUMN_BOOK_GENRE, BookEntry.GENDER_NON_FICTION);
-//        values.put(BookEntry.COLUMN_BOOK_PRICE, 20);
-//        values.put(BookEntry.COLUMN_BOOK_QUANTITY, 7);
-//        values.put(BookEntry.COLUMN_BOOK_SUPPLIER, "PJ Library");
-//        values.put(BookEntry.COLUMN_PHONE_NUMBER_OF_SUPPLIER, "858 226 7777");
-//
-//        long newRowId = db.insert(BookEntry.TABLE_NAME, null, values);
-//    }
+    private void insertBook() {
+
+        ContentValues values = new ContentValues();
+
+        values.put(BookEntry.COLUMN_BOOK_NAME, "My Russian Grandmother and her American Vacuum Cleaner|Meir Shalev");
+        values.put(BookEntry.COLUMN_BOOK_GENRE, BookEntry.GENDER_NON_FICTION);
+        values.put(BookEntry.COLUMN_BOOK_PRICE, 20);
+        values.put(BookEntry.COLUMN_BOOK_QUANTITY, 7);
+        values.put(BookEntry.COLUMN_BOOK_SUPPLIER, "PJ Library");
+        values.put(BookEntry.COLUMN_PHONE_NUMBER_OF_SUPPLIER, "858 226 7777");
+
+        // Insert a new row for Shalev's book into the provider using the ContentResolver.
+        // Use the {@link BookEntry#CONTENT_URI} to indicate that we want to insert
+        // into the books database table.
+        // Receive the new content URI that will allow us to access Shalev's book data in the future.
+        Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, values);
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -162,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_data:
-//                insertBook();
+                insertBook();
                 displayDatabaseInfo();
                 return true;
             // Respond to a click on the "Delete all entries" menu option

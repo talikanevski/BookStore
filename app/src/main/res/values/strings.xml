@@ -43,10 +43,15 @@
     <string name="genre_poetry">Poetry</string>
     <!-- Label for dropdown menu option for Tragedy genre-->
     <string name="genre_tragedy">Tragedy</string>
-    <string name="insert_data">insert data</string>
-    <string name="delete_all_books">delete all books</string>
+    <string name="insert_data">Insert Dummy Data</string>
+    <string name="delete_all_books">Delete All Books</string>
     <!-- Label for editor menu option to save book and leave editor -->
     <string name="action_save">Save</string>
     <!-- Label for editor overflow menu option that deletes the current book  -->
     <string name="action_delete">Delete</string>
+    <!-- Toast message in editor when new book has been successfully inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_insert_book_successful">Book saved</string>
+
+    <!-- Toast message in editor when new pet has failed to be inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_insert_book_failed">Error with saving book</string>
 </resources>

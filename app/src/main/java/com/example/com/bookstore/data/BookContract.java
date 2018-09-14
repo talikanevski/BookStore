@@ -1,5 +1,6 @@
 package com.example.com.bookstore.data;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -8,7 +9,6 @@ public final class BookContract {
     // give it an empty constructor.
     private BookContract() {
     }
-
     /**
      * The "Content authority" is a name for the entire content provider, similar to the
      * relationship between a domain name and its website. A convenient string to use for the
@@ -45,6 +45,22 @@ public final class BookContract {
          **/
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_BOOKS);
 
+        /**
+         * The MIME type of the {@link #CONTENT_URI} for a list of books.
+         * <p>
+         * we’re making use of the constants defined in the ContentResolver class:
+         * CURSOR_DIR_BASE_TYPE (which maps to the constant "vnd.android.cursor.dir")
+         * and CURSOR_ITEM_BASE_TYPE (which maps to the constant “vnd.android.cursor.item”).
+         */
+        public static final String CONTENT_LIST_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BOOKS;
+
+        /**
+         * The MIME type of the {@link #CONTENT_URI} for a single book.
+         */
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BOOKS;
+
         public static final String TABLE_NAME = "books";
 
         public static final String _ID = BaseColumns._ID;
@@ -54,7 +70,6 @@ public final class BookContract {
         public final static String COLUMN_BOOK_QUANTITY = "quantity";
         public final static String COLUMN_BOOK_SUPPLIER = "supplier";
         public final static String COLUMN_PHONE_NUMBER_OF_SUPPLIER = "phone";
-
 
         /**
          * Possible values for the genre of the book.
@@ -70,6 +85,23 @@ public final class BookContract {
         public static final int GENDER_ROMANCE = 8;
         public static final int GENDER_POETRY = 9;
         public static final int GENDER_HISTORY = 10;
+
+        public static boolean isValidGenre(Integer genre) {
+            if (genre == GENRE_UNKNOWN ||
+                    genre == GENDER_ACTION_AND_ADVENTURE ||
+                    genre == GENDER_DRAMA ||
+                    genre == GENDER_FICTION ||
+                    genre == GENDER_HISTORY ||
+                    genre == GENDER_NON_FICTION ||
+                    genre == GENDER_POETRY ||
+                    genre == GENDER_ROMANCE ||
+                    genre == GENDER_SATIRE ||
+                    genre == GENDER_SCIENCE_FICTION ||
+                    genre == GENDER_TRAGEDY) {
+                return true;
+            }
+            return false;
+        }
     }
 }
 
