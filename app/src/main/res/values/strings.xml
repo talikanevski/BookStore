@@ -54,4 +54,5 @@
 
     <!-- Toast message in editor when new pet has failed to be inserted [CHAR LIMIT=NONE] -->
     <string name="editor_insert_book_failed">Error with saving book</string>
+    <string name="sell">Sell</string>
 </resources>
