@@ -1,6 +1,7 @@
 package com.example.com.bookstore;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -64,6 +65,20 @@ public class EditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        // examine the intent that was used to launch this activity,
+        // in order to figure out if we're creating a new pat or editing the existing pet
+        Intent intent = getIntent();
+        Uri currentBookUri = intent.getData();
+
+        // IF the intent DOES NOT contain a book content Uri,
+        // then we know that we're creating a new book
+
+        if (currentBookUri == null) {
+            setTitle(R.string.add_new_book);
+        } else {
+            setTitle(getString(R.string.edit_book));
+        }
 
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_product_name);
