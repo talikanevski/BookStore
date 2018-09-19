@@ -55,14 +55,14 @@ public class MainActivity extends AppCompatActivity implements
 
         mDbHelper = new BookDBHelper(this);
 
-        // Find the ListView which will be populated with the pet data
+        // Find the ListView which will be populated with the book data
         ListView bookListView = (ListView) findViewById(R.id.list);
 
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
         bookListView.setEmptyView(emptyView);
-        // set up an Adapter to create a list item for each row of pet data in the cursor
-        //THERE IS NO PET DATA YET (until the loader finishes), so pass in null for the Cursor
+        // set up an Adapter to create a list item for each row of book data in the cursor
+        //THERE IS NO BOOK DATA YET (until the loader finishes), so pass in null for the Cursor
         mCursorAdapter = new BookCursorAdapter(this, null);
         bookListView.setAdapter(mCursorAdapter);
 
@@ -87,8 +87,6 @@ public class MainActivity extends AppCompatActivity implements
          */
         getLoaderManager().initLoader(BOOK_LOADER, null, this);
     }
-
-
     /**
      * helper method to display information in the onscreen TextView about the state of
      * the books database.
@@ -107,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements
         ContentValues values = new ContentValues();
 
         values.put(BookEntry.COLUMN_BOOK_NAME, "My Russian Grandmother and her American Vacuum Cleaner|Meir Shalev");
-        values.put(BookEntry.COLUMN_BOOK_GENRE, BookEntry.GENDER_NON_FICTION);
+        values.put(BookEntry.COLUMN_BOOK_GENRE, BookEntry.GENRE_NON_FICTION);
         values.put(BookEntry.COLUMN_BOOK_PRICE, 20);
         values.put(BookEntry.COLUMN_BOOK_QUANTITY, 7);
         values.put(BookEntry.COLUMN_BOOK_SUPPLIER, "PJ Library");

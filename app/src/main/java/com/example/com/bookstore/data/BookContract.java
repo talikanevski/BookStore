@@ -75,29 +75,29 @@ public final class BookContract {
          * Possible values for the genre of the book.
          */
         public static final int GENRE_UNKNOWN = 0;
-        public static final int GENDER_FICTION = 1;
-        public static final int GENDER_SCIENCE_FICTION = 2;
-        public static final int GENDER_NON_FICTION = 3;
-        public static final int GENDER_ACTION_AND_ADVENTURE = 4;
-        public static final int GENDER_SATIRE = 5;
-        public static final int GENDER_DRAMA = 6;
-        public static final int GENDER_TRAGEDY = 7;
-        public static final int GENDER_ROMANCE = 8;
-        public static final int GENDER_POETRY = 9;
-        public static final int GENDER_HISTORY = 10;
+        public static final int GENRE_FICTION = 1;
+        public static final int GENRE_SCIENCE_FICTION = 2;
+        public static final int GENRE_NON_FICTION = 3;
+        public static final int GENRE_ACTION_AND_ADVENTURE = 4;
+        public static final int GENRE_SATIRE = 5;
+        public static final int GENRE_DRAMA = 6;
+        public static final int GENRE_TRAGEDY = 7;
+        public static final int GENRE_ROMANCE = 8;
+        public static final int GENRE_POETRY = 9;
+        public static final int GENRE_HISTORY = 10;
 
         public static boolean isValidGenre(Integer genre) {
             if (genre == GENRE_UNKNOWN ||
-                    genre == GENDER_ACTION_AND_ADVENTURE ||
-                    genre == GENDER_DRAMA ||
-                    genre == GENDER_FICTION ||
-                    genre == GENDER_HISTORY ||
-                    genre == GENDER_NON_FICTION ||
-                    genre == GENDER_POETRY ||
-                    genre == GENDER_ROMANCE ||
-                    genre == GENDER_SATIRE ||
-                    genre == GENDER_SCIENCE_FICTION ||
-                    genre == GENDER_TRAGEDY) {
+                    genre == GENRE_ACTION_AND_ADVENTURE ||
+                    genre == GENRE_DRAMA ||
+                    genre == GENRE_FICTION ||
+                    genre == GENRE_HISTORY ||
+                    genre == GENRE_NON_FICTION ||
+                    genre == GENRE_POETRY ||
+                    genre == GENRE_ROMANCE ||
+                    genre == GENRE_SATIRE ||
+                    genre == GENRE_SCIENCE_FICTION ||
+                    genre == GENRE_TRAGEDY) {
                 return true;
             }
             return false;
