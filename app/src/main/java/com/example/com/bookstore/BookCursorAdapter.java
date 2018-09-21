@@ -1,12 +1,17 @@
 package com.example.com.bookstore;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.com.bookstore.data.BookContract;
 
@@ -52,16 +57,48 @@ public class BookCursorAdapter extends CursorAdapter {
      *                correct row.
      */
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, final Context context, final Cursor cursor) {
         // Find fields to populate in inflated template
         TextView name = (TextView) view.findViewById(R.id.name);
-        TextView quantity = (TextView) view.findViewById(R.id.quantity);
+        final TextView quantity = (TextView) view.findViewById(R.id.quantity);
+        // Find sale button
+        Button sale = view.findViewById(R.id.button);
+
         // Find the columns of pet attributes that we're interested in
         int nameColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_NAME);
-        int booksColumnIndex = cursor.getColumnIndexOrThrow(BookContract.BookEntry.COLUMN_BOOK_QUANTITY);
+        int quantityColumnIndex = cursor.getColumnIndexOrThrow(BookContract.BookEntry.COLUMN_BOOK_QUANTITY);
         // Read the book attributes from the Cursor for the current book
         String bookName = cursor.getString(nameColumnIndex);
-        String booksInStock = cursor.getString(booksColumnIndex);
+        String booksInStock = cursor.getString(quantityColumnIndex);
+        final int bookQuantity = cursor.getInt(quantityColumnIndex);
+
+        if (bookQuantity == 0) {
+            sale.setEnabled(false);
+            sale.setText("Out of stock");
+        } else {
+            sale.setEnabled(true);
+            sale.setText(R.string.sell);
+            final String id = cursor.getString(cursor.getColumnIndex(BookContract.BookEntry._ID));
+
+            sale.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Uri currentBookUri = ContentUris.withAppendedId(BookContract.BookEntry.CONTENT_URI, Long.parseLong(id));
+                    ContentValues values = new ContentValues();
+                    values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, bookQuantity - 1);
+                    context.getContentResolver().update(currentBookUri, values, null, null);
+                    swapCursor(cursor);
+                    // Check if out of stock to display toast
+                    if (bookQuantity == 1) {
+                        Toast.makeText(context, R.string.toast_out_of_stock, Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+
+        }
+
 
         // Update the TextViews with the attributes for the current book
         name.setText(bookName);

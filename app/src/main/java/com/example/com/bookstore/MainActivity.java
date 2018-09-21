@@ -1,9 +1,11 @@
 package com.example.com.bookstore;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +36,9 @@ public class MainActivity extends AppCompatActivity implements
     // Identifies a particular Loader being used in this component
     private static final int BOOK_LOADER = 0;
 
-    /** Defines a CursorAdapter for the ListView**/
+    /**
+     * Defines a CursorAdapter for the ListView
+     **/
     BookCursorAdapter mCursorAdapter;
 
     private BookDBHelper mDbHelper;
@@ -87,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         getLoaderManager().initLoader(BOOK_LOADER, null, this);
     }
+
     /**
      * helper method to display information in the onscreen TextView about the state of
      * the books database.
@@ -119,6 +125,14 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * Helper method to delete all books in the database.
+     */
+    private void deleteAllBooks() {
+        int rowsDeleted = getContentResolver().delete(BookEntry.CONTENT_URI, null, null);
+        Log.v("CatalogActivity", rowsDeleted + " rows deleted from pet database");
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
@@ -129,11 +143,41 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
-                // Do nothing for now
+                // Pop up confirmation dialog for deletion
+                showDeleteAllConfirmationDialog();/** it will create a dialog
+                that calls deleteBook when the delete button is pressed.**/
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+    /**
+     * Prompt the user to confirm that they want to delete this book.
+     */
+    private void showDeleteAllConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the positive and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_all_book_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete all the books.
+                deleteAllBooks();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the book.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -148,7 +192,8 @@ public class MainActivity extends AppCompatActivity implements
                 projection,
                 null,
                 null,
-                null);    }
+                null);
+    }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

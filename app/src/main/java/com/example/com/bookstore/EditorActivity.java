@@ -1,19 +1,22 @@
 package com.example.com.bookstore;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,7 +26,6 @@ import android.widget.Toast;
 
 
 import com.example.com.bookstore.data.BookContract.BookEntry;
-import com.example.com.bookstore.data.BookDBHelper;
 
 /**
  * Allows user to create a new book or edit an existing one.
@@ -72,6 +74,29 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
      */
     private int mGenre = BookEntry.GENRE_UNKNOWN;
 
+
+    /**
+     * Boolean flag that keeps track of whether the book has been edited (true) or not (false)
+     */
+    private boolean mBookHasChanged = false;
+
+    // OnTouchListener that listens for any user touches on a View, implying that they are modifying
+    // the view, and we change the mBookHasChanged boolean to true.
+
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            mBookHasChanged = true;
+            return false;
+            /** If you return false you basically say "Not my problem,
+             Someone else will have to take care of this click".
+             Then android will pass the event down to other views, which could be under your view.
+             In our case, if I understand this right, we are saying that from here boolean @mPetHasChanged
+             will take care of this touching event
+             https://stackoverflow.com/questions/21578476/what-actually-happens-if-i-return-false-in-a-ontouchlistener**/
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +112,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         if (currentBookUri == null) {
             setTitle(R.string.add_new_book);
+            // Invalidate the options menu, so the "Delete" menu option can be hidden.
+            // (It doesn't make sense to delete a book that hasn't been created yet.)
+            invalidateOptionsMenu();
         } else {
             setTitle(getString(R.string.edit_book));
 
@@ -102,6 +130,17 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mQuantityEditText = (EditText) findViewById(R.id.edit_quantity);
         mSupplierEditText = (EditText) findViewById(R.id.edit_supplier_name);
         mSupplierPhoneNumberEditText = (EditText) findViewById(R.id.edit_supplier_phone_number);
+
+
+        /**   Setup OnTouchListeners on all the input fields, so we can determine if the user
+         has touched or modified them. This will let us know if there are unsaved changes
+         or not, if the user tries to leave the editor without saving**/
+        mNameEditText.setOnTouchListener(mTouchListener);
+        mGenreSpinner.setOnTouchListener(mTouchListener);
+        mPriceEditText.setOnTouchListener(mTouchListener);
+        mQuantityEditText.setOnTouchListener(mTouchListener);
+        mSupplierEditText.setOnTouchListener(mTouchListener);
+        mSupplierPhoneNumberEditText.setOnTouchListener(mTouchListener);
 
         setupSpinner();
     }
@@ -164,37 +203,95 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     /**
      * get user input and save new book into database
      **/
-    private void insertBook() {
+    private void saveBook() {
         String nameString = mNameEditText.getText().toString().trim(); /**  .trim erase spaces**/
         String priceString = mPriceEditText.getText().toString().trim();
-        int price = Integer.parseInt(priceString);/**we want to store an integer, not a String.
-         parseInt method convert the String into an Integer**/
         String quantityString = mQuantityEditText.getText().toString().trim();
-        int quantity = Integer.parseInt(quantityString);
         String supplierString = mSupplierEditText.getText().toString().trim();
         String phoneNumberOfSupplierString = mSupplierPhoneNumberEditText.getText().toString().trim();
+
+        // Check if this is supposed to be a new book
+        // and check if all the fields in the editor are blank
+        if (currentBookUri == null &&
+                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) &&
+                TextUtils.isEmpty(quantityString) && TextUtils.isEmpty(supplierString)
+                && TextUtils.isEmpty(phoneNumberOfSupplierString) && mGenre == BookEntry.GENRE_UNKNOWN) {
+            // Since no fields were modified, we can return early without creating a new book.
+            // No need to create ContentValues and no need to do any ContentProvider operations.
+            return;
+        }
 
         ContentValues values = new ContentValues();
 
         values.put(BookEntry.COLUMN_BOOK_NAME, nameString);
         values.put(BookEntry.COLUMN_BOOK_GENRE, mGenre);
+
+        // If the price is not provided by the user, don't try to parse the string into an
+        // integer value. Use 0 by default.
+        int price = 0;
+        if (!TextUtils.isEmpty(priceString)) {
+            price = Integer.parseInt(priceString);/**we want to store an integer, not a String.
+             parseInt method convert the String into an Integer**/
+        }
         values.put(BookEntry.COLUMN_BOOK_PRICE, price);
+
+        // If the quantity is not provided by the user, don't try to parse the string into an
+        // integer value. Use 0 by default.
+        int quantity = 0;
+        if (!TextUtils.isEmpty(quantityString)) {
+            quantity = Integer.parseInt(quantityString);/**we want to store an integer, not a String.
+             parseInt method convert the String into an Integer**/
+        }
+
         values.put(BookEntry.COLUMN_BOOK_QUANTITY, quantity);
+
         values.put(BookEntry.COLUMN_BOOK_SUPPLIER, supplierString);
         values.put(BookEntry.COLUMN_PHONE_NUMBER_OF_SUPPLIER, phoneNumberOfSupplierString);
 
-        // Insert a new row for book in the database, returning the ID of that new row.
-        Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, values);
 
-        // Show a toast message depending on whether or not the insertion was successful
-        if (newUri == null) {
-            // If the new content URI is null, then there was an error with insertion.
-            Toast.makeText(this, getString(R.string.editor_insert_book_failed),
-                    Toast.LENGTH_SHORT).show();
+        // Determine if this is a new or existing book by checking if mCurrentPetUri is null or not
+        if (currentBookUri == null) {
+            // This is a NEW book, so insert a new book into the provider,
+            // returning the content URI for the new book.
+            /** One major difference between the SQLiteDatabase insert() method
+             and the ContentResolver insert() method is that one returns a row ID,
+             while the other returns a Uri, respectively.*/
+            // Insert a new row for book in the database, returning the ID of that new row.
+            Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, values);
+
+            // Show a toast message depending on whether or not the insertion was successful
+            if (newUri == null) {
+                // If the new content URI is null, then there was an error with insertion.
+                Toast.makeText(this, getString(R.string.editor_insert_book_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the insertion was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_insert_book_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+
         } else {
-            // Otherwise, the insertion was successful and we can display a toast.
-            Toast.makeText(this, getString(R.string.editor_insert_book_successful),
-                    Toast.LENGTH_SHORT).show();
+            // Otherwise this is an EXISTING book, so update the book with content URI:
+            // currentBookUri and pass in the new ContentValues.
+            // Pass in null for the selection and selection args because currentBookUri
+            // will already identify the correct row in the database that we want to modify.
+            int rowsAffected = getContentResolver().update(currentBookUri, values, null, null);
+            //Now this returns a number of updated rows.
+            // To display whether the update was successful or not,
+            // we can check the number of updated rows.
+            // If it was 0, then the update was not successful,
+            // and we can show an error toast. Otherwise we show a success toast.
+
+            // Show a toast message depending on whether or not the update was successful.
+            if (rowsAffected == 0) {
+                // If no rows were affected, then there was an error with the update.
+                Toast.makeText(this, getString(R.string.editor_update_book_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the update was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_update_book_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -206,6 +303,21 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         return true;
     }
 
+    /**
+     * This method is called after invalidateOptionsMenu(), so that the
+     * menu can be updated (some menu items can be hidden or made visible).
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // If this is a new pet, hide the "Delete" menu item.
+        if (currentBookUri == null) {
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
+            menuItem.setVisible(false);
+        }
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
@@ -213,18 +325,39 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 //set book to database
-                insertBook();
+                saveBook();
                 //Exit activity and return to the CatalogActivity
                 finish();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
-                // Do nothing for now
+                // Pop up confirmation dialog for deletion
+                showDeleteConfirmationDialog();/** it will create a dialog
+             that calls deleteBook when the delete button is pressed.**/
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
-                // Navigate back to parent activity (CatalogActivity)
-                NavUtils.navigateUpFromSameTask(this);
+                // If the book hasn't changed, continue with navigating up to parent activity
+                // which is the {@link MainActivity}.
+                if (!mBookHasChanged) {
+                    NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                    return true;
+                }
+
+                // Otherwise if there are unsaved changes, setup a dialog to warn the user.
+                // Create a click listener to handle the user confirming that
+                // changes should be discarded.
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // User clicked "Discard" button, navigate to parent activity.
+                                NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                            }
+                        };
+
+                // Show a dialog that notifies the user they have unsaved changes
+                showUnsavedChangesDialog(discardButtonClickListener);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -338,5 +471,112 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mQuantityEditText.setText("");
         mSupplierEditText.setText("");
         mSupplierPhoneNumberEditText.setText("");
+    }
+
+    private void showUnsavedChangesDialog(
+            DialogInterface.OnClickListener discardButtonClickListener) {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the positive and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.unsaved_changes_dialog_msg);
+        builder.setPositiveButton(R.string.discard, discardButtonClickListener);
+        builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Keep editing" button, so dismiss the dialog
+                // and continue editing the pet.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // If the book hasn't changed, continue with handling back button press
+        if (!mBookHasChanged) {
+            super.onBackPressed();
+            return;
+        }
+
+        // Otherwise if there are unsaved changes, setup a dialog to warn the user.
+        // Create a click listener to handle the user confirming that changes should be discarded.
+        DialogInterface.OnClickListener discardButtonClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // User clicked "Discard" button, close the current activity.
+                        finish();
+                    }
+                };
+
+        // Show dialog that there are unsaved changes
+        showUnsavedChangesDialog(discardButtonClickListener);
+    }
+
+    /**
+     * Prompt the user to confirm that they want to delete this book.
+     */
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the positive and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the book.
+                deleteBook();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the book.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    /**
+     * Perform the deletion of the book in the database.
+     */
+    private void deleteBook() {
+        // Only perform the delete if this is an existing book.
+        if (currentBookUri != null) {
+            // Call the ContentResolver to delete the book at the given content URI.
+            // Pass in null for the selection and selection args because the currentBookUri
+            // content URI already identifies the book that we want.
+            // The delete method, like update, returns the number of rows deleted.
+            int rowsDeleted;
+            rowsDeleted = getContentResolver().delete(currentBookUri, null, null);
+            Log.v("DeleteBook", String.valueOf(rowsDeleted));
+
+
+            // Show a toast message depending on whether or not the delete was successful.
+            if (rowsDeleted == 0) {
+                Log.v("DeleteBook", rowsDeleted + " rows deleted from book database");
+
+                // If no rows were deleted, then there was an error with the delete.
+                Toast.makeText(this, getString(R.string.editor_delete_book_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the delete was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_delete_book_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // Close the activity
+        finish();
+
     }
 }
