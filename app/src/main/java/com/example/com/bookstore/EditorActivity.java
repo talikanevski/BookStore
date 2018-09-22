@@ -45,6 +45,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private EditText mNameEditText;
 
     /**
+     * EditText field to enter the book's author
+     */
+    private EditText mAuthorEditText;
+    /**
      * EditText field to enter the book's genre
      */
     private Spinner mGenreSpinner;
@@ -74,7 +78,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
      */
     private int mGenre = BookEntry.GENRE_UNKNOWN;
 
-
     /**
      * Boolean flag that keeps track of whether the book has been edited (true) or not (false)
      */
@@ -103,7 +106,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         setContentView(R.layout.activity_editor);
 
         // examine the intent that was used to launch this activity,
-        // in order to figure out if we're creating a new pat or editing the existing pet
+        // in order to figure out if we're creating a new pat or editing the existing book
         Intent intent = getIntent();
         currentBookUri = intent.getData();
 
@@ -125,17 +128,18 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_product_name);
+        mAuthorEditText = (EditText) findViewById(R.id.edit_author_name);
         mGenreSpinner = (Spinner) findViewById(R.id.spinner_genre);
         mPriceEditText = (EditText) findViewById(R.id.edit_book_price);
         mQuantityEditText = (EditText) findViewById(R.id.edit_quantity);
         mSupplierEditText = (EditText) findViewById(R.id.edit_supplier_name);
         mSupplierPhoneNumberEditText = (EditText) findViewById(R.id.edit_supplier_phone_number);
 
-
         /**   Setup OnTouchListeners on all the input fields, so we can determine if the user
          has touched or modified them. This will let us know if there are unsaved changes
          or not, if the user tries to leave the editor without saving**/
         mNameEditText.setOnTouchListener(mTouchListener);
+        mAuthorEditText.setOnTouchListener(mTouchListener);
         mGenreSpinner.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
         mQuantityEditText.setOnTouchListener(mTouchListener);
@@ -205,6 +209,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
      **/
     private void saveBook() {
         String nameString = mNameEditText.getText().toString().trim(); /**  .trim erase spaces**/
+        String authorString = mAuthorEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
         String quantityString = mQuantityEditText.getText().toString().trim();
         String supplierString = mSupplierEditText.getText().toString().trim();
@@ -213,17 +218,27 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Check if this is supposed to be a new book
         // and check if all the fields in the editor are blank
         if (currentBookUri == null &&
-                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) &&
-                TextUtils.isEmpty(quantityString) && TextUtils.isEmpty(supplierString)
-                && TextUtils.isEmpty(phoneNumberOfSupplierString) && mGenre == BookEntry.GENRE_UNKNOWN) {
+                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(authorString)
+                &&TextUtils.isEmpty(priceString) && TextUtils.isEmpty(quantityString)
+                && TextUtils.isEmpty(supplierString)&& TextUtils.isEmpty(phoneNumberOfSupplierString)
+                && mGenre == BookEntry.GENRE_UNKNOWN) {
             // Since no fields were modified, we can return early without creating a new book.
             // No need to create ContentValues and no need to do any ContentProvider operations.
             return;
         }
 
+        if (currentBookUri == null){
+            if (TextUtils.isEmpty(nameString) || TextUtils.isEmpty(authorString)
+                    || TextUtils.isEmpty(quantityString)){
+                Toast.makeText(this, "Please fill the required fields",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+
         ContentValues values = new ContentValues();
 
         values.put(BookEntry.COLUMN_BOOK_NAME, nameString);
+        values.put(BookEntry.COLUMN_BOOK_AUTHOR, authorString);
         values.put(BookEntry.COLUMN_BOOK_GENRE, mGenre);
 
         // If the price is not provided by the user, don't try to parse the string into an
@@ -244,10 +259,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         values.put(BookEntry.COLUMN_BOOK_QUANTITY, quantity);
-
         values.put(BookEntry.COLUMN_BOOK_SUPPLIER, supplierString);
         values.put(BookEntry.COLUMN_PHONE_NUMBER_OF_SUPPLIER, phoneNumberOfSupplierString);
-
 
         // Determine if this is a new or existing book by checking if mCurrentPetUri is null or not
         if (currentBookUri == null) {
@@ -370,6 +383,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String[] projection = {
                 BookEntry._ID,
                 BookEntry.COLUMN_BOOK_NAME,
+                BookEntry.COLUMN_BOOK_AUTHOR,
                 BookEntry.COLUMN_BOOK_GENRE,
                 BookEntry.COLUMN_BOOK_PRICE,
                 BookEntry.COLUMN_BOOK_QUANTITY,
@@ -384,7 +398,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 null,                   // No selection arguments
                 null);                  // Default sort order
     }
-
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
@@ -401,6 +414,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             //and then using the indexes and the get methods to grab the actual integers and strings.
             // Find the columns of book attributes that we're interested in
             int nameColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_NAME);
+            int authorColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_AUTHOR);
             int genreColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_GENRE);
             int priceColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_PRICE);
             int quantityColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_BOOK_QUANTITY);
@@ -409,6 +423,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
+            String author = cursor.getString(authorColumnIndex);
             int genre = cursor.getInt(genreColumnIndex);
             int price = cursor.getInt(priceColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
@@ -417,6 +432,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
+            mAuthorEditText.setText(author);
             mPriceEditText.setText(Integer.toString(price));
             mQuantityEditText.setText(Integer.toString(quantity));
             mSupplierEditText.setText(supplier);
@@ -467,6 +483,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     public void onLoaderReset(Loader<Cursor> loader) {
         // If the loader is invalidated, clear out all the data from the input fields.
         mNameEditText.setText("");
+        mAuthorEditText.setText("");
         mGenreSpinner.setSelection(0); // GENRE_UNKNOWN
         mQuantityEditText.setText("");
         mSupplierEditText.setText("");

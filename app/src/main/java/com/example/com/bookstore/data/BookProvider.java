@@ -146,6 +146,13 @@ public class BookProvider extends ContentProvider {
         }
 
         /** Sanity checking.**/
+        // Check that the author of the book is not null
+        String author = values.getAsString(BookEntry.COLUMN_BOOK_AUTHOR);
+        if (author == null) {
+            throw new IllegalArgumentException("Book requires an author");
+        }
+
+        /** Sanity checking.**/
         // Check that the genre of the book. It is stored as an integer.
         Integer genre = values.getAsInteger(BookEntry.COLUMN_BOOK_GENRE);
         if (genre == null || !BookEntry.isValidGenre(genre)) {
@@ -190,7 +197,6 @@ public class BookProvider extends ContentProvider {
 
         long id = database.insert(BookEntry.TABLE_NAME, null, values);
 
-
         /**Based on the ID, we can determine if the database operation went smoothly or not.
          If the ID is -1, then the insertion failed. Log an error and return null.**/
         if (id == -1) {
@@ -227,8 +233,6 @@ public class BookProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
-
-
     }
 
     /**
@@ -245,6 +249,16 @@ public class BookProvider extends ContentProvider {
             String name = values.getAsString(BookEntry.COLUMN_BOOK_NAME);
             if (name == null) {
                 throw new IllegalArgumentException("Book requires a name");
+            }
+        }
+
+        /** Sanity checking.**/
+        // If the {@link BookEntry.COLUMN_BOOK_AUTHOR} key is present,
+        // check that the AUTHOR value is not null.
+        if (values.containsKey(BookEntry.COLUMN_BOOK_AUTHOR)) {
+            String author = values.getAsString(BookEntry.COLUMN_BOOK_AUTHOR);
+            if (author == null) {
+                throw new IllegalArgumentException("Book requires an author");
             }
         }
         /** Sanity checking.**/
@@ -322,8 +336,6 @@ public class BookProvider extends ContentProvider {
 
         // Track the number of rows that were deleted
         int rowsDeleted;
-
-
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case BOOKS:

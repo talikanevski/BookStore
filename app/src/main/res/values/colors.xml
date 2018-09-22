@@ -17,4 +17,6 @@
     <color name="editorColorPrimaryDark">#394450</color>
 
     <color name="list_item">#dedede</color>
+    <color name="list_item2">#9E9E9E</color>
+    <color name="list_item_text">#00796B</color>
 </resources>

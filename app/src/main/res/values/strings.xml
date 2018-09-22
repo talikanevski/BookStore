@@ -2,16 +2,16 @@
     <string name="app_name">Book Store</string>
     <string name="add_new_book">Add a Book</string>
     <!-- Label for category product name -->
-    <string name="category_product_name">Product Name</string>
+    <string name="category_book_name">Book Name</string>
     <!-- Text hint for Product Name field in the editor -->
-    <string name="hint_product_name">Author and Name of the Book</string>
+    <string name="hint_book_name">Name of the Book</string>
     <!-- Text hint for book price field in the editor -->
     <string name="hint_book_price">Book Price</string>
     <string name="genre">Genre</string>
     <string name="price">Price</string>
     <!-- currency $ [CHAR LIMIT=5] -->
     <string name="currency">$</string>
-    <string name="quantity">Quantity</string>
+    <string name="quantity">Quantity:</string>
     <!-- Text hint for quantity field in the editor -->
     <string name="hint_quantity">How many in stock</string>
     <!-- how many books in stock (units)-->
@@ -102,6 +102,8 @@
     <string name="unknown_genre">Unknown genre</string>
 
     <string name="toast_out_of_stock">Out of stock</string>
+    <string name="author">Author</string>
+    <string name="author_of_the_book">Author of the book</string>
 
 
 </resources>

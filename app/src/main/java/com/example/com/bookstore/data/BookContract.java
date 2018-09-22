@@ -64,7 +64,8 @@ public final class BookContract {
         public static final String TABLE_NAME = "books";
 
         public static final String _ID = BaseColumns._ID;
-        public final static String COLUMN_BOOK_NAME = "product_name";
+        public final static String COLUMN_BOOK_NAME = "book_name";
+        public final static String COLUMN_BOOK_AUTHOR = "author";
         public final static String COLUMN_BOOK_GENRE = "genre";
         public final static String COLUMN_BOOK_PRICE = "price";
         public final static String COLUMN_BOOK_QUANTITY = "quantity";

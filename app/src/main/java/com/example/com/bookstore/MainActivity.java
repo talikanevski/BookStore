@@ -110,7 +110,8 @@ public class MainActivity extends AppCompatActivity implements
 
         ContentValues values = new ContentValues();
 
-        values.put(BookEntry.COLUMN_BOOK_NAME, "My Russian Grandmother and her American Vacuum Cleaner|Meir Shalev");
+        values.put(BookEntry.COLUMN_BOOK_NAME, "My Russian Grandmother and her American Vacuum Cleaner");
+        values.put(BookEntry.COLUMN_BOOK_AUTHOR, "Meir Shalev");
         values.put(BookEntry.COLUMN_BOOK_GENRE, BookEntry.GENRE_NON_FICTION);
         values.put(BookEntry.COLUMN_BOOK_PRICE, 20);
         values.put(BookEntry.COLUMN_BOOK_QUANTITY, 7);
@@ -122,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements
         // into the books database table.
         // Receive the new content URI that will allow us to access Shalev's book data in the future.
         Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, values);
-
     }
 
     /**
@@ -145,11 +145,12 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_delete_all_entries:
                 // Pop up confirmation dialog for deletion
                 showDeleteAllConfirmationDialog();/** it will create a dialog
-                that calls deleteBook when the delete button is pressed.**/
+             that calls deleteBook when the delete button is pressed.**/
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
     /**
      * Prompt the user to confirm that they want to delete this book.
      */
@@ -185,7 +186,9 @@ public class MainActivity extends AppCompatActivity implements
         String[] projection = {
                 BookEntry._ID,
                 BookEntry.COLUMN_BOOK_NAME,
-                BookEntry.COLUMN_BOOK_QUANTITY};
+                BookEntry.COLUMN_BOOK_AUTHOR,
+                BookEntry.COLUMN_BOOK_QUANTITY,
+                BookEntry.COLUMN_BOOK_PRICE};
         //This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,
                 BookEntry.CONTENT_URI,

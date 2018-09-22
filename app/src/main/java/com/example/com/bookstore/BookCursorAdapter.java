@@ -17,11 +17,10 @@ import com.example.com.bookstore.data.BookContract;
 
 /**
  * {@link BookCursorAdapter} is an adapter for a list or grid view
- * that uses a {@link Cursor} of pet data as its data source. This adapter knows
+ * that uses a {@link Cursor} of book data as its data source. This adapter knows
  * how to create list items for each row of book data in the {@link Cursor}.
  */
 public class BookCursorAdapter extends CursorAdapter {
-
     /**
      * Constructs a new {@link BookCursorAdapter}.
      *
@@ -31,7 +30,6 @@ public class BookCursorAdapter extends CursorAdapter {
     public BookCursorAdapter(Context context, Cursor c) {
         super(context, c, 0 /* flags */);
     }
-
     /**
      * Makes a new blank list item view. No data is set (or bound) to the views yet.
      *
@@ -60,21 +58,30 @@ public class BookCursorAdapter extends CursorAdapter {
     public void bindView(View view, final Context context, final Cursor cursor) {
         // Find fields to populate in inflated template
         TextView name = (TextView) view.findViewById(R.id.name);
+        TextView author = (TextView) view.findViewById(R.id.author);
         final TextView quantity = (TextView) view.findViewById(R.id.quantity);
+        TextView price = (TextView) view.findViewById(R.id.price);
         // Find sale button
         Button sale = view.findViewById(R.id.button);
 
         // Find the columns of pet attributes that we're interested in
         int nameColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_NAME);
+        int authorColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_AUTHOR);
         int quantityColumnIndex = cursor.getColumnIndexOrThrow(BookContract.BookEntry.COLUMN_BOOK_QUANTITY);
+        int priceColumnIndex = cursor.getColumnIndexOrThrow(BookContract.BookEntry.COLUMN_BOOK_PRICE);
+
         // Read the book attributes from the Cursor for the current book
         String bookName = cursor.getString(nameColumnIndex);
+        String bookAuthor = cursor.getString(authorColumnIndex);
         String booksInStock = cursor.getString(quantityColumnIndex);
         final int bookQuantity = cursor.getInt(quantityColumnIndex);
+        String priceOfTheBook = cursor.getString(priceColumnIndex);
+        final int bookPrice = cursor.getInt(priceColumnIndex);
 
         if (bookQuantity == 0) {
             sale.setEnabled(false);
             sale.setText("Out of stock");
+
         } else {
             sale.setEnabled(true);
             sale.setText(R.string.sell);
@@ -93,15 +100,13 @@ public class BookCursorAdapter extends CursorAdapter {
                     if (bookQuantity == 1) {
                         Toast.makeText(context, R.string.toast_out_of_stock, Toast.LENGTH_SHORT).show();
                     }
-
                 }
             });
-
         }
-
-
         // Update the TextViews with the attributes for the current book
         name.setText(bookName);
+        author.setText(bookAuthor);
         quantity.setText(booksInStock);
+        price.setText(priceOfTheBook);
     }
 }
