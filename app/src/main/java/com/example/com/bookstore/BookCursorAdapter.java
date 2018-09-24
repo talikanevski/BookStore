@@ -62,7 +62,7 @@ public class BookCursorAdapter extends CursorAdapter {
         final TextView quantity = (TextView) view.findViewById(R.id.quantity);
         TextView price = (TextView) view.findViewById(R.id.price);
         // Find sale button
-        Button sale = view.findViewById(R.id.button);
+        Button sale = view.findViewById(R.id.sellButton);
 
         // Find the columns of pet attributes that we're interested in
         int nameColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_NAME);

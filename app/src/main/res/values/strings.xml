@@ -104,6 +104,7 @@
     <string name="toast_out_of_stock">Out of stock</string>
     <string name="author">Author</string>
     <string name="author_of_the_book">Author of the book</string>
+    <string name="book_validation">All the required fields need to be filled.</string>
 
 
 </resources>

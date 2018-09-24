@@ -9,240 +9,318 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 --><!-- Layout for the editor -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_margin"
-    tools:context=".EditorActivity">
+    android:background="@drawable/background">
 
-    <!-- Product category -->
-    <LinearLayout
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_margin"
+        tools:context=".EditorActivity">
 
-        <!-- Label -->
-        <TextView
-            style="@style/CategoryStyle"
-            android:text="@string/category_book_name" />
-
-        <!-- Input field -->
+        <!-- Product category -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:orientation="vertical"
-            android:paddingLeft="4dp">
+            android:orientation="horizontal">
 
-            <!-- Floating labels for editing text
-            https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <!-- Name field -->
-                <EditText
-                    android:id="@+id/edit_product_name"
-                    style="@style/EditorFieldStyle"
-                    android:hint="@string/hint_book_name"
-                    android:inputType="textCapWords" />
-            </android.support.design.widget.TextInputLayout>
+            <!-- Label -->
+            <TextView
+                style="@style/CategoryStyle"
+                android:text="@string/category_book_name" />
+
+            <TextView
+                style="@style/asteriks"
+                android:text="*" />
+
+            <!-- Input field -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:paddingLeft="4dp">
+
+                <!-- Floating labels for editing text
+                https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <!-- Name field -->
+                    <EditText
+                        android:id="@+id/edit_product_name"
+                        style="@style/EditorFieldStyle"
+                        android:hint="@string/hint_book_name"
+                        android:inputType="textCapWords" />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <!-- Author category -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Label -->
+            <TextView
+                style="@style/CategoryStyle"
+                android:text="@string/author" />
+
+            <TextView
+                style="@style/asteriks"
+                android:text="*" />
+            <!-- Input field -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:paddingLeft="4dp">
+
+                <!-- Floating labels for editing text
+                          https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <!-- Name field -->
+                    <EditText
+                        android:id="@+id/edit_author_name"
+                        style="@style/EditorFieldStyle"
+                        android:hint="@string/author_of_the_book"
+                        android:inputType="textCapWords" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Gender category -->
+        <LinearLayout
+            android:id="@+id/container_genre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Label -->
+            <TextView
+                style="@style/CategoryStyle"
+                android:text="@string/genre" />
+
+            <!-- Input field -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <!-- Gender drop-down spinner -->
+                <Spinner
+                    android:id="@+id/spinner_genre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:paddingRight="16dp"
+                    android:spinnerMode="dropdown" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Price category -->
+        <LinearLayout
+            android:id="@+id/price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Label -->
+            <TextView
+                style="@style/CategoryStyle"
+                android:text="@string/price" />
+
+            <!-- Input fields -->
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:paddingLeft="4dp">
+                <!-- Floating labels for editing text
+                                 https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <!-- Price field -->
+                    <EditText
+                        android:id="@+id/edit_book_price"
+                        style="@style/EditorFieldStyle"
+                        android:hint="@string/hint_book_price"
+                        android:inputType="number" />
+                </android.support.design.widget.TextInputLayout>
+
+                <!-- Units for currency ($) -->
+                <TextView
+                    android:id="@+id/label_weight_units"
+                    style="@style/EditorUnitsStyle"
+                    android:text="@string/currency" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <!-- Quantity category -->
+        <LinearLayout
+            android:id="@+id/quantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Label -->
+            <TextView
+                style="@style/CategoryStyle"
+                android:text="@string/quantity" />
+
+            <TextView
+                style="@style/asteriks"
+                android:text="*" />
+
+            <!-- Input fields -->
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:paddingLeft="4dp">
+
+                <!-- Floating labels for editing text
+                 https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/e"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <!-- Quantity field -->
+                    <EditText
+                        android:id="@+id/edit_quantity"
+                        style="@style/EditorFieldStyle"
+                        android:hint="@string/hint_quantity"
+                        android:inputType="number" />
+                </android.support.design.widget.TextInputLayout>
+
+                <!--  how many books in stock -->
+                <TextView
+                    android:id="@+id/label_books"
+                    style="@style/EditorUnitsStyle"
+                    android:text="@string/how_many_books_in_stock" />
+            </RelativeLayout>
 
         </LinearLayout>
 
 
-    </LinearLayout>
-    <!-- Author category -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <!-- Label -->
-        <TextView
-            style="@style/CategoryStyle"
-            android:text="@string/author" />
-
-        <!-- Input field -->
+        <!-- Quantity change -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/buttons_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:orientation="vertical"
-            android:paddingLeft="4dp">
+            android:orientation="horizontal">
 
-            <!-- Floating labels for editing text
-                      https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <!-- Name field -->
-                <EditText
-                    android:id="@+id/edit_author_name"
-                    style="@style/EditorFieldStyle"
-                    android:hint="@string/author_of_the_book"
-                    android:inputType="textCapWords" />
-            </android.support.design.widget.TextInputLayout>
+            <!-- Label -->
+            <TextView style="@style/CategoryStyle" />
+
+            <!-- Input fields -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:paddingLeft="4dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp">
+
+                <ImageView
+                    android:id="@+id/plus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/plus"
+                    android:layout_marginRight="12dp"
+                    />
+
+                <ImageView
+                    android:id="@+id/minus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/minus"
+                    />
+
+            </LinearLayout>
+
         </LinearLayout>
-    </LinearLayout>
 
-    <!-- Gender category -->
-    <LinearLayout
-        android:id="@+id/container_genre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <!-- Label -->
-        <TextView
-            style="@style/CategoryStyle"
-            android:text="@string/genre" />
-
-        <!-- Input field -->
+        <!-- Supplier category -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <!-- Gender drop-down spinner -->
-            <Spinner
-                android:id="@+id/spinner_genre"
+            <!-- Label -->
+            <TextView
+                style="@style/CategoryStyle"
+                android:text="@string/supplier_category" />
+
+            <!-- Input fields -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:paddingLeft="4dp">
+
+                <!-- Floating labels for editing text
+                 https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <!-- Name field -->
+                    <EditText
+                        android:id="@+id/edit_supplier_name"
+                        style="@style/EditorFieldStyle"
+                        android:hint="@string/hint_supplier"
+                        android:inputType="textCapWords" />
+                </android.support.design.widget.TextInputLayout>
+
+                <!-- Floating labels for editing text
+                 https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <!-- Phone field -->
+                    <EditText
+                        android:id="@+id/edit_supplier_phone_number"
+                        style="@style/EditorFieldStyle"
+                        android:hint="@string/hint_supplier_phone_number"
+                        android:inputType="textCapWords" />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="250dp"
+            android:layout_marginTop="120dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/asteriks"
+                android:text="*" />
+
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:paddingRight="16dp"
-                android:spinnerMode="dropdown" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- Price category -->
-    <LinearLayout
-        android:id="@+id/price"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <!-- Label -->
-        <TextView
-            style="@style/CategoryStyle"
-            android:text="@string/price" />
-
-        <!-- Input fields -->
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:paddingLeft="4dp">
-            <!-- Floating labels for editing text
-                             https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <!-- Price field -->
-                <EditText
-                    android:id="@+id/edit_book_price"
-                    style="@style/EditorFieldStyle"
-                    android:hint="@string/hint_book_price"
-                    android:inputType="number" />
-            </android.support.design.widget.TextInputLayout>
-
-            <!-- Units for currency ($) -->
-            <TextView
-                android:id="@+id/label_weight_units"
-                style="@style/EditorUnitsStyle"
-                android:text="@string/currency" />
-        </RelativeLayout>
-    </LinearLayout>
-
-    <!-- Quantity category -->
-    <LinearLayout
-        android:id="@+id/quantity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <!-- Label -->
-        <TextView
-            style="@style/CategoryStyle"
-            android:text="@string/quantity" />
-
-        <!-- Input fields -->
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:paddingLeft="4dp">
-
-            <!-- Floating labels for editing text
-                                      https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <!-- Quantity field -->
-                <EditText
-                    android:id="@+id/edit_quantity"
-                    style="@style/EditorFieldStyle"
-                    android:hint="@string/hint_quantity"
-                    android:inputType="number" />
-            </android.support.design.widget.TextInputLayout>
-
-            <!--  how many books in stock -->
-            <TextView
-                android:id="@+id/label_books"
-                style="@style/EditorUnitsStyle"
-                android:text="@string/how_many_books_in_stock" />
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <!-- Supplier category -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <!-- Label -->
-        <TextView
-            style="@style/CategoryStyle"
-            android:text="@string/supplier_category" />
-
-        <!-- Input fields -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:orientation="vertical"
-            android:paddingLeft="4dp">
-
-            <!-- Floating labels for editing text
-             https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <!-- Name field -->
-                <EditText
-                    android:id="@+id/edit_supplier_name"
-                    style="@style/EditorFieldStyle"
-                    android:hint="@string/hint_supplier"
-                    android:inputType="textCapWords" />
-            </android.support.design.widget.TextInputLayout>
-
-            <!-- Floating labels for editing text
-             https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <!-- Phone field -->
-                <EditText
-                    android:id="@+id/edit_supplier_phone_number"
-                    style="@style/EditorFieldStyle"
-                    android:hint="@string/hint_supplier_phone_number"
-                    android:inputType="textCapWords" />
-            </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Required fields" />
 
         </LinearLayout>
+
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>
+

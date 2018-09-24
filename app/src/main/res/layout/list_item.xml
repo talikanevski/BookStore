@@ -115,7 +115,7 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/sellButton"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"

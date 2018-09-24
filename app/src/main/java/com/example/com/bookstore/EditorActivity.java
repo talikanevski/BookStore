@@ -2,6 +2,7 @@ package com.example.com.bookstore;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -21,10 +22,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 
+import com.example.com.bookstore.data.BookContract;
 import com.example.com.bookstore.data.BookContract.BookEntry;
 
 /**
@@ -64,6 +68,16 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private EditText mQuantityEditText;
 
     /**
+     * ImageView to increase the quantity of a book in store
+     **/
+    private ImageView mPlusQuantityImageView;
+
+    /**
+     * ImageView to decrease the quantity of a book in store
+     **/
+    private ImageView mMinusQuantityImageView;
+
+    /**
      * EditText field to enter the name of book's supplier
      */
     private EditText mSupplierEditText;
@@ -94,7 +108,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             /** If you return false you basically say "Not my problem,
              Someone else will have to take care of this click".
              Then android will pass the event down to other views, which could be under your view.
-             In our case, if I understand this right, we are saying that from here boolean @mPetHasChanged
+             In this case, I am saying that from here boolean @mBookHasChanged
              will take care of this touching event
              https://stackoverflow.com/questions/21578476/what-actually-happens-if-i-return-false-in-a-ontouchlistener**/
         }
@@ -105,6 +119,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
+        LinearLayout buttons = (LinearLayout) findViewById(R.id.buttons_layout);
+        mPlusQuantityImageView = (ImageView) findViewById(R.id.plus)
+;
+        mMinusQuantityImageView = (ImageView) findViewById(R.id.minus);
         // examine the intent that was used to launch this activity,
         // in order to figure out if we're creating a new pat or editing the existing book
         Intent intent = getIntent();
@@ -118,10 +136,41 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Invalidate the options menu, so the "Delete" menu option can be hidden.
             // (It doesn't make sense to delete a book that hasn't been created yet.)
             invalidateOptionsMenu();
+            buttons.setVisibility(View.GONE);
+
         } else {
             setTitle(getString(R.string.edit_book));
+            buttons.setVisibility(View.VISIBLE);
+            mMinusQuantityImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
+                    if (currentBookUri != null) {
 
-            // Initialize a loader to read the pet data from the database
+                        if (quantity > 0) {
+                            quantity--;
+                            ContentValues values = new ContentValues();
+                            values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, quantity);
+                            getContentResolver().update(currentBookUri, values, null, null);
+                        }
+                    }
+                }
+            });
+
+            mPlusQuantityImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
+
+                    if (currentBookUri != null) {
+                        quantity++;
+                        ContentValues values = new ContentValues();
+                        values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, quantity);
+                        getContentResolver().update(currentBookUri, values, null, null);
+                    }
+                }
+            });
+            // Initialize a loader to read the book data from the database
             // and display the current values in the editor
             getLoaderManager().initLoader(CURRENT_BOOK_LOADER, null, this);
         }
@@ -132,6 +181,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mGenreSpinner = (Spinner) findViewById(R.id.spinner_genre);
         mPriceEditText = (EditText) findViewById(R.id.edit_book_price);
         mQuantityEditText = (EditText) findViewById(R.id.edit_quantity);
+
         mSupplierEditText = (EditText) findViewById(R.id.edit_supplier_name);
         mSupplierPhoneNumberEditText = (EditText) findViewById(R.id.edit_supplier_phone_number);
 
@@ -145,6 +195,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mQuantityEditText.setOnTouchListener(mTouchListener);
         mSupplierEditText.setOnTouchListener(mTouchListener);
         mSupplierPhoneNumberEditText.setOnTouchListener(mTouchListener);
+
 
         setupSpinner();
     }
@@ -219,17 +270,17 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // and check if all the fields in the editor are blank
         if (currentBookUri == null &&
                 TextUtils.isEmpty(nameString) && TextUtils.isEmpty(authorString)
-                &&TextUtils.isEmpty(priceString) && TextUtils.isEmpty(quantityString)
-                && TextUtils.isEmpty(supplierString)&& TextUtils.isEmpty(phoneNumberOfSupplierString)
+                && TextUtils.isEmpty(priceString) && TextUtils.isEmpty(quantityString)
+                && TextUtils.isEmpty(supplierString) && TextUtils.isEmpty(phoneNumberOfSupplierString)
                 && mGenre == BookEntry.GENRE_UNKNOWN) {
             // Since no fields were modified, we can return early without creating a new book.
             // No need to create ContentValues and no need to do any ContentProvider operations.
             return;
         }
 
-        if (currentBookUri == null){
+        if (currentBookUri == null) {
             if (TextUtils.isEmpty(nameString) || TextUtils.isEmpty(authorString)
-                    || TextUtils.isEmpty(quantityString)){
+                    || TextUtils.isEmpty(quantityString)) {
                 Toast.makeText(this, "Please fill the required fields",
                         Toast.LENGTH_SHORT).show();
             }
@@ -338,11 +389,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 //set book to database
-                saveBook();
-                //Exit activity and return to the CatalogActivity
-                finish();
-                return true;
-            // Respond to a click on the "Delete" menu option
+                if (isValidBook()) {
+                    saveBook();
+                    //Exit activity and return to the CatalogActivity
+                    finish();
+                    return true;
+                }
+                // Respond to a click on the "Delete" menu option
+                // OR if the book wasn't valid after "if (isValidBook())" check
             case R.id.action_delete:
                 // Pop up confirmation dialog for deletion
                 showDeleteConfirmationDialog();/** it will create a dialog
@@ -374,6 +428,22 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isValidBook() {
+        String nameString = mNameEditText.getText().toString().trim(); /**  .trim erase spaces**/
+        String authorString = mAuthorEditText.getText().toString().trim();
+        String quantityString = mQuantityEditText.getText().toString().trim();
+
+        if (TextUtils.isEmpty(nameString) ||
+                TextUtils.isEmpty(authorString) ||
+                TextUtils.isEmpty(quantityString)) {
+            Toast.makeText(this, getString(R.string.book_validation), Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
     @Override
