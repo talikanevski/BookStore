@@ -120,9 +120,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         setContentView(R.layout.activity_editor);
 
         LinearLayout buttons = (LinearLayout) findViewById(R.id.buttons_layout);
-        mPlusQuantityImageView = (ImageView) findViewById(R.id.plus)
-;
+        mPlusQuantityImageView = (ImageView) findViewById(R.id.plus);
         mMinusQuantityImageView = (ImageView) findViewById(R.id.minus);
+
         // examine the intent that was used to launch this activity,
         // in order to figure out if we're creating a new pat or editing the existing book
         Intent intent = getIntent();
@@ -374,10 +374,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        // If this is a new pet, hide the "Delete" menu item.
+        // If this is a new pet, hide the "Delete" and "Call Supplier" menu item.
         if (currentBookUri == null) {
-            MenuItem menuItem = menu.findItem(R.id.action_delete);
-            menuItem.setVisible(false);
+            MenuItem deleteItem = menu.findItem(R.id.action_delete);
+            deleteItem.setVisible(false);
+            MenuItem callItem = menu.findItem(R.id.action_call);
+            callItem.setVisible(false);
         }
         return true;
     }
@@ -387,6 +389,15 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
+
+            case  R.id.action_call:
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel",
+                        mSupplierPhoneNumberEditText.getText().toString(), null));
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                  startActivity(intent);
+                }
+                return true;
+
             case R.id.action_save:
                 //set book to database
                 if (isValidBook()) {
@@ -395,8 +406,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                     finish();
                     return true;
                 }
-                // Respond to a click on the "Delete" menu option
-                // OR if the book wasn't valid after "if (isValidBook())" check
+                return true;
+
+            // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
                 // Pop up confirmation dialog for deletion
                 showDeleteConfirmationDialog();/** it will create a dialog
@@ -432,12 +444,16 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     private boolean isValidBook() {
         String nameString = mNameEditText.getText().toString().trim(); /**  .trim erase spaces**/
-        String authorString = mAuthorEditText.getText().toString().trim();
         String quantityString = mQuantityEditText.getText().toString().trim();
+        String priceString = mPriceEditText.getText().toString().trim();
+        String supplierString = mSupplierEditText.getText().toString().trim();
+        String supplierPhoneNumberString = mSupplierPhoneNumberEditText.getText().toString().trim();
 
         if (TextUtils.isEmpty(nameString) ||
-                TextUtils.isEmpty(authorString) ||
-                TextUtils.isEmpty(quantityString)) {
+                TextUtils.isEmpty(quantityString) ||
+                TextUtils.isEmpty(priceString) ||
+                TextUtils.isEmpty(supplierString) ||
+                TextUtils.isEmpty(supplierPhoneNumberString)) {
             Toast.makeText(this, getString(R.string.book_validation), Toast.LENGTH_SHORT).show();
             return false;
         } else {

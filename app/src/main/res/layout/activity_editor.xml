@@ -58,9 +58,9 @@
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
-
-
         </LinearLayout>
+
+
         <!-- Author category -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,9 +72,6 @@
                 style="@style/CategoryStyle"
                 android:text="@string/author" />
 
-            <TextView
-                style="@style/asteriks"
-                android:text="*" />
             <!-- Input field -->
             <LinearLayout
                 android:layout_width="0dp"
@@ -138,6 +135,10 @@
             <TextView
                 style="@style/CategoryStyle"
                 android:text="@string/price" />
+
+            <TextView
+                style="@style/asteriks"
+                android:text="*" />
 
             <!-- Input fields -->
             <RelativeLayout
@@ -227,32 +228,28 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:paddingLeft="4dp"
                 android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp">
+                android:layout_marginBottom="6dp"
+                android:layout_weight="2"
+                android:paddingLeft="4dp">
 
                 <ImageView
                     android:id="@+id/plus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/plus"
                     android:layout_marginRight="12dp"
-                    />
+                    android:src="@drawable/plus" />
 
                 <ImageView
                     android:id="@+id/minus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/minus"
-                    />
+                    android:src="@drawable/minus" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-
-        <!-- Supplier category -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -263,7 +260,12 @@
                 style="@style/CategoryStyle"
                 android:text="@string/supplier_category" />
 
-            <!-- Input fields -->
+
+            <TextView
+                style="@style/asteriks"
+                android:text="*" />
+
+            <!-- Input field -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -283,6 +285,27 @@
                         android:hint="@string/hint_supplier"
                         android:inputType="textCapWords" />
                 </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView style="@style/CategoryStyle" />
+
+            <TextView
+                style="@style/asteriks"
+                android:text="*" />
+
+            <!-- Input field -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:paddingLeft="4dp">
 
                 <!-- Floating labels for editing text
                  https://stackoverflow.com/questions/30571596/how-to-use-textinputlayout-in-new-android-design-library -->
@@ -296,9 +319,7 @@
                         android:hint="@string/hint_supplier_phone_number"
                         android:inputType="textCapWords" />
                 </android.support.design.widget.TextInputLayout>
-
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout

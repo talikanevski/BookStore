@@ -5,6 +5,12 @@
     tools:context=".EditorActivity">
 
     <item
+        android:id="@+id/action_call"
+        android:title="Call"
+        android:icon="@drawable/call"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_save"
         android:title="@string/action_save"
         android:icon="@drawable/ic_done"
